@@ -14,7 +14,7 @@ type BadgeVariant = 'primary' | 'secondary' | 'success' | 'warning' | 'danger' |
 })
 export class UiBadgeComponent {
   variant = input<BadgeVariant>('neutral');
-  class = input('');
+  className = input('');
 
   classes = computed(() => {
     const base =
@@ -29,7 +29,8 @@ export class UiBadgeComponent {
       neutral: 'bg-gray-100 text-gray-700',
     };
 
-    return [base, variants[this.variant()], this.class()].filter(Boolean).join(' ');
+    return [base, variants[this.variant()], this.className()]
+      .filter(Boolean)
+      .join(' ');
   });
 }
-

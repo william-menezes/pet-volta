@@ -5,12 +5,11 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="rounded-pet border border-gray-200 bg-white {{ class() }}">
+    <div class="rounded-pet border border-gray-200 bg-white {{ className() }}">
       <ng-content />
     </div>
   `,
 })
 export class UiCardComponent {
-  class = input('');
+  className = input('');
 }
-

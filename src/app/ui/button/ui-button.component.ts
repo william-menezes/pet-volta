@@ -27,7 +27,7 @@ export class UiButtonComponent {
   size = input<ButtonSize>('md');
   type = input<'button' | 'submit' | 'reset'>('button');
   disabled = input(false);
-  class = input('');
+  className = input('');
 
   classes = computed(() => {
     const base =
@@ -46,9 +46,8 @@ export class UiButtonComponent {
       ghost: 'bg-transparent text-text hover:bg-gray-50 border border-gray-200',
     };
 
-    return [base, sizes[this.size()], variants[this.variant()], this.class()]
+    return [base, sizes[this.size()], variants[this.variant()], this.className()]
       .filter(Boolean)
       .join(' ');
   });
 }
-

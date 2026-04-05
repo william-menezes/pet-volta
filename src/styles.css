@@ -1,3 +1,4 @@
+@config '../tailwind.config.js';
 @import 'tailwindcss';
 
 @layer base {
@@ -7,6 +8,7 @@
 
   html {
     font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+    scroll-behavior: smooth;
   }
 
   body {

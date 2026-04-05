@@ -5,7 +5,7 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <details class="relative {{ class() }}">
+    <details class="relative {{ className() }}">
       <summary
         class="list-none rounded-pet-sm border border-gray-200 bg-white px-3 py-2 text-sm text-text"
       >
@@ -20,6 +20,5 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
   `,
 })
 export class UiDropdownComponent {
-  class = input('');
+  className = input('');
 }
-
