@@ -1,0 +1,8 @@
+{
+  "framework": "angular",
+  "crons": [{ "path": "/api/keepalive", "schedule": "0 8 */5 * *" }],
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api/$1" },
+    { "source": "/(.*)", "destination": "/" }
+  ]
+}

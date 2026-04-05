@@ -1,10 +1,10 @@
-# 🐾 Pet Volta MVP — Especificação Funcional (v2)
+# 🐾 Pet Volta MVP — Especificação Funcional (v3)
 
 > **Branch:** `001-mvp-pet-volta`  
-> **Data:** 2026-04-04  
-> **Status:** Draft v2  
+> **Data:** 2026-04-05  
+> **Status:** Draft v3  
 > **Constitution:** [constitution.md](./constitution.md)  
-> **Changelog:** Adicionado recompensa, geoloc por IP, 4 planos, constraints Supabase Free
+> **Changelog v3:** Landing page (US-011), Stripe como última fase, serviços via plataforma
 
 ---
 
@@ -231,6 +231,49 @@ Uma plataforma web (PWA-ready) onde:
 - [ ] Pull-to-refresh em mobile
 - [ ] Skeleton loading para cada card individualmente
 
+### US-011: Landing Page Pública
+**Como** visitante do site, **quero** entender o que é o Pet Volta e ver os planos disponíveis, **para** decidir se quero criar uma conta.
+
+**Critérios de Aceite:**
+- [ ] Rota: `/` — renderizada via SSR (prerender estático)
+- [ ] LCP < 1.5s, Lighthouse Performance ≥ 90
+- [ ] **Header (sticky):**
+  - Logo Pet Volta no canto esquerdo
+  - Menu de navegação central: "Como Funciona", "Planos", "FAQ" (smooth scroll para seções)
+  - Botões no canto direito: "Entrar" (outline) e "Criar Conta" (gradient primary→secondary)
+  - Mobile: hamburger menu colapsável abaixo de `lg:`
+  - Ao scrollar: backdrop blur (`bg-white/80 backdrop-blur-md`) com sombra sutil
+- [ ] **Hero Section:**
+  - Background gradient blue→violet (eixo TypeUI Colorful)
+  - Headline principal: chamada apelativa sobre segurança do pet
+  - Subtítulo: explicação curta do que o Pet Volta faz
+  - 2 CTAs: "Começar Grátis" (botão grande, branco sobre gradient) e "Conhecer Planos" (outline branco, scroll)
+  - Elemento visual: mockup/ilustração de celular mostrando a página pública do pet
+- [ ] **Seção "Como Funciona":**
+  - 3 passos com ícones: Cadastre → Ative a tag → Seja notificado
+  - Layout em row (desktop) ou column (mobile)
+- [ ] **Seção "Planos":**
+  - 4 cards comparativos (Digital, Essential, Elite, Guardian)
+  - Plano Elite com destaque visual (borda gradient, badge "Recomendado")
+  - Features listadas conforme tabela da US-009
+  - Todos os botões redirecionam para `/auth/register` (Stripe é integrado por último)
+  - Preços visíveis
+- [ ] **Seção "Depoimentos":**
+  - 3 cards de depoimentos fictícios (até ter usuários reais)
+  - Cada card: avatar (iniciais), nome fictício, cidade, texto do depoimento, 5 estrelas
+  - Disclamer visual sutil: dados fictícios para demonstração
+- [ ] **Seção "FAQ":**
+  - Mínimo 6 perguntas frequentes em formato accordion (expandir/colapsar)
+  - Perguntas: Como funciona? O que acontece no scan? Preciso pagar? Dados seguros? Posso cancelar? O que é recompensa?
+- [ ] **CTA Final:**
+  - Barra gradient com chamada para ação e botão "Criar Conta Grátis"
+- [ ] **Footer:**
+  - Logo Pet Volta
+  - Links: Sobre, Política de Privacidade, Termos de Uso, Contato
+  - Copyright
+- [ ] Toda a página funciona sem JavaScript para conteúdo básico (SSR)
+- [ ] Meta tags: title, description, OG image estática, Twitter Card
+
 ---
 
 ## 3. Requisitos Não Funcionais
@@ -338,3 +381,5 @@ Os seguintes itens são explicitamente **NÃO** parte do MVP:
 - [ ] Feature de recompensa está documentada com regras de exibição por plano
 - [ ] Geolocalização por IP como fallback está especificada
 - [ ] Diferença entre plano Digital (sem tag) e planos pagos (com tag) está clara
+- [ ] Landing page com todas as seções especificadas (header, hero, planos, depoimentos, FAQ, footer)
+- [ ] Integração Stripe é a última fase — todos os fluxos funcionam com plano mockado antes

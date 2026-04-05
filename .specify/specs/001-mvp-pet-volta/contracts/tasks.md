@@ -1,313 +1,220 @@
-# 🐾 Pet Volta MVP — Task Breakdown (v2)
+# 🐾 Pet Volta MVP — Task Breakdown (v3)
 
-> **Branch:** `001-mvp-pet-volta`  
-> **Spec:** [spec.md](./spec.md) (v2)  
-> **Plan:** [plan.md](./plan.md) (v2)  
-> **Changelog:** Tasks adicionadas para recompensa, IP geoloc, 4 planos, Supabase Free mitigações
-
----
+> **Spec:** [spec.md](./spec.md) (v2) | **Plan:** [plan.md](./plan.md) (v2)  
+> **Changelog v3:** Landing page na Fase 1, Stripe movido para Fase 5 (última), fases reorganizadas
 
 ## Legenda
-
-- `[P]` = Pode ser executada em paralelo com a task anterior
-- `[B]` = Bloqueante — tasks seguintes dependem desta
-- `[T]` = Inclui testes obrigatórios
-- `[NEW]` = Task nova na v2
-- `→ Checkpoint` = Ponto de validação antes de continuar
+- `[P]` Paralela | `[B]` Bloqueante | `[T]` Testes obrigatórios | `→` Checkpoint
 
 ---
 
-## Fase 0 — Setup do Projeto e Infraestrutura
+## Fase 0 — Scaffold e Infraestrutura Base
 
-### T001 [B] — Scaffold do Projeto Angular 21
-- `ng new pet-volta --style=css --ssr --routing`
+### T001 [B] — Scaffold Angular 21 + Zoneless
+- `ng new pet-volta --directory=. --style=css --ssr --routing --skip-git`
 - `provideZonelessChangeDetection()` em `app.config.ts`
-- Path aliases: `@core/*`, `@shared/*`, `@features/*`, `@ui/*`, `@models/*`, `@env/*`
 - Remover `zone.js` dos polyfills
+- Path aliases em `tsconfig.json`: `@core/*`, `@shared/*`, `@features/*`, `@ui/*`, `@models/*`, `@env/*`
+- Configurar `app.routes.server.ts` com render modes SSR/CSR por rota
 
-### T002 [B] — Configurar Tailwind CSS v4 + Design Tokens TypeUI Colorful
-- Tokens de cor conforme TypeUI Colorful: primary (#3B82F6), secondary (#8B5CF6), success, warning, danger
-- Fontes: Outfit (display/titles), Inter (body), JetBrains Mono (code/IDs)
-- `borderRadius`: `rounded-pet: 24px`, `rounded-pet-sm: 16px`
-- Grid 8px (conforme TypeUI Colorful)
-- Gradientes: `from-blue-500 to-violet-500` (eixo principal TypeUI)
+### T002 [B] — Criar CLAUDE.md + .gitignore + vercel.json
+- `CLAUDE.md` na raiz (stack, convenções, constraints, paths, comandos)
+- `.gitignore`: node_modules, .env.local, dist/, .supabase/
+- `vercel.json`: `{ "framework": "angular", "crons": [{ "path": "/api/keepalive", "schedule": "0 8 */5 * *" }] }`
 
-### T003 [B] — Configurar Supabase Local + Schema v2
-**Migrations:**
-- `001_enums.sql`: plan_tier (`digital`, `essential`, `elite`, `guardian`), pet_species, pet_size, pet_status, tag_status, health_record_type, subscription_status
-- `002_tables.sql`: profiles, pets (com `public_slug`, `reward_amount_cents`, `lost_description`, `max_photos`), tags, health_records, scan_events (com `ip_city`, `ip_region`, `ip_country`, `ip_lat`, `ip_lon`, `location_type`), notification_prefs, pet_co_tutors, stripe_events
-- `003_triggers.sql`: auto-create profile, auto-create notification_prefs, updated_at triggers
-- `004_rls_policies.sql`: todas as policies (DENY default, ALLOW explícito)
-- `005_storage_buckets.sql`: pet-photos (public), avatars (public), health-attachments (private)
-- `006_seed_tags.sql`: inserir 20 tags orphan para testes
+### T003 [B] — Tailwind CSS v4 + Design Tokens TypeUI Colorful
+- Tokens: primary `#3B82F6`, secondary `#8B5CF6`, success `#16A34A`, warning `#D97706`, danger `#DC2626`
+- Fontes: Outfit (display/700), Inter (body/400), JetBrains Mono (code/400)
+- Border radius: `rounded-pet: 24px`, `rounded-pet-sm: 16px`
+- Grid 8px. Gradientes CSS: blue→violet, red→orange
+- Preload de fontes no `index.html`
 
-### T004 [P] — Instalar e Configurar Zard UI + Customização Colorful
-- `npx zard-cli init`
-- Adicionar componentes: button, input, card, badge, dialog, toast, skeleton, avatar, dropdown, tabs, select, switch, separator, label
-- Customizar tokens para paleta TypeUI Colorful
-- Customizar border-radius para `rounded-pet`
-- Verificar compatibilidade Angular 21 + zoneless
+### T004 [P] — Instalar e Configurar Zard UI
+- `npx zard-cli init` + componentes base (button, input, card, badge, dialog, toast, skeleton, avatar, dropdown, tabs, select, switch, separator, label)
+- Customizar paleta e border-radius
 
-### T005 [P] — Configurar Sentry + Environments + Vercel
-- Sentry Angular SDK com DSN por environment
-- `environment.ts` / `environment.prod.ts`: Supabase URL, anon key, Stripe key
-- Configurar `vercel.json` básico com rewrites para Angular SSR
+### T005 [P] — Configurar Supabase Local + Migrations
+- `supabase init` + `supabase link`
+- Migrations: enums → tabelas (profiles, pets, tags, health_records, scan_events, notification_prefs, pet_co_tutors, stripe_events) → triggers → RLS policies → storage buckets
+- Seed: 20 tags orphan
 
-### T006 [P][NEW] — Vercel Cron Job Anti-Pausa Supabase
-- Criar `api/keepalive.ts` (Vercel Serverless Function)
-- SELECT simples no Supabase (`tags` LIMIT 1)
-- Configurar em `vercel.json`: cron a cada 5 dias
-- Verificar que ping mantém projeto ativo
+### T006 [P] — Environments + Sentry
+- `environment.ts` (local) e `environment.prod.ts` (prod)
+- `@sentry/angular` configurado
 
 ### → Checkpoint Fase 0
 - [ ] `ng serve` funciona sem Zone.js
-- [ ] Tailwind com tokens TypeUI Colorful renderiza gradientes blue→violet
-- [ ] `supabase start` roda todas as migrations (schema v2)
+- [ ] Tailwind com gradientes blue→violet renderiza
 - [ ] Zard UI componentes com paleta customizada
-- [ ] Cron anti-pausa configurado
+- [ ] `supabase start` cria todas as tabelas
+- [ ] Push → Vercel deploya automaticamente
 
 ---
 
-## Fase 1 — Core: Auth + Supabase Service Layer + Plan Limits
+## Fase 1 — Landing Page + Auth
 
 ### T007 [B][T] — Supabase Client Service
-- `SupabaseService` singleton com createClient()
-- SSR-aware: `createServerClient` no server, `createBrowserClient` no browser
-- Signal `currentUser` via `auth.onAuthStateChange`
+- Singleton SSR-aware (createServerClient / createBrowserClient)
+- Signal `currentUser`
 
-### T008 [B][T] — Auth Service + Guard + Interceptor
-- signUp (plano `digital` automático), signIn, signInWithGoogle, signOut, resetPassword
-- `authGuard`: CanActivateFn → redirect `/auth/login`
-- `authInterceptor`: Bearer token
+### T008 [B][T] — Auth Service + Guard
+- signUp, signIn, signInWithGoogle, signOut, resetPassword
+- Signals: `currentSession`, `isAuthenticated`
+- `authGuard`: redirect `/auth/login`
 
-### T009 [T] — Telas de Auth
-- Login: email + senha, botão Google
-- Registro: nome, email, senha, confirmar
-- Forgot password
-- SSR prerender para rotas auth
+### T009 [B][T] — Landing Page (SSR Prerender)
+**Rota:** `/` | **Arquivo:** `src/app/features/landing/landing.component.ts`
 
-### T010 [B][NEW][T] — Plan Limits Service
-**Arquivo:** `src/app/shared/utils/plan-limits.ts` + `src/app/core/plan/plan.service.ts`
+**5 seções obrigatórias:**
 
-- Constantes `PLAN_LIMITS` (conforme plan.md Seção 2.5)
-- `PlanService`: getCurrentPlan(), canAddPet(), canAddHealthRecord(), canSetReward(), canInviteCoTutor(), hasTagAccess(), getPhotoLimit()
-- Signal `currentPlan` derivado do `profiles.plan_tier`
-- Usado em guards, componentes e formulários para UX de limite
-- **NÃO é a barreira de segurança** (RLS é) — é para UX feedback
+**HEADER (sticky, blur backdrop):**
+- Esquerda: espaço para logo (SVG placeholder `🐾 Pet Volta`)
+- Centro: menus (Início, Planos, FAQ) com scroll suave para âncoras
+- Direita: botões `[Login]` e `[Criar Conta]` → `/auth/login` e `/auth/register`
+- Mobile: hamburger menu
+
+**HERO:**
+- Título: headline apelativo sobre segurança pet
+- Subtítulo: proposta de valor em 1 linha
+- CTAs: `[Começar Grátis]` e `[Conhecer Planos]`
+- Visual: ilustração/mockup ou ícone grande de QR + pet
+- Background: gradiente blue→violet (eixo TypeUI Colorful)
+- Seção "Como Funciona" com 3 passos visuais (ícones + texto curto)
+
+**PLANOS:**
+- 4 cards lado a lado (1 col mobile, 2 tab, 4 desktop)
+- Digital (Free) / Essential / Elite (destaque "Mais popular") / Guardian
+- Features em lista com ✅/❌
+- Gradiente sutil no card Elite
+- Botões: "Começar Grátis" (digital) e "Assinar" (pagos — por ora, redirect para registro)
+
+**DEPOIMENTOS:**
+- 3 cards com citação, nome, cidade, emoji do pet
+- Dados fictícios (marcar internamente como placeholder)
+- Layout: carousel no mobile, 3 colunas no desktop
+
+**FAQ:**
+- 8 perguntas em accordion (Zard UI ou customizado)
+- Perguntas: como funciona a tag, segurança dos dados, cancelamento, modo perdido, recompensa, limite de pets, tag à prova d'água, internet necessária
+
+**FOOTER:**
+- Logo + 3 colunas (Produto, Suporte, Legal)
+- Copyright + frase emocional
+- Links para Termos, Privacidade, LGPD (páginas placeholder)
+
+**Requisitos técnicos:**
+- Prerender estático (ISR não necessário — conteúdo estático)
+- LCP < 1.5s
+- Meta tags OpenGraph (título, descrição, imagem placeholder)
+- Responsivo mobile-first
+- Acessível (headings semânticos, contraste WCAG AA, teclado navegável)
+
+### T010 [T] — Telas de Auth
+- Login: email + senha, Google OAuth, link "Criar conta"
+- Registro: nome, email, senha, confirmar senha
+- Forgot Password
+- Erros em português. Redirect pós-login → `/dashboard`
+
+### T011 [B][T] — Plan Limits Service
+- Constantes `PLAN_LIMITS` com 4 tiers
+- `PlanService` com checks: canAddPet(), getPhotoLimit(), hasTagAccess(), etc.
+- Signal `currentPlan`
+- **Para testes sem Stripe:** alterar `plan_tier` direto no SQL Editor do Supabase
 
 ### → Checkpoint Fase 1
-- [ ] Registro → login → dashboard (tela vazia) → logout
+- [ ] Landing page completa com 5 seções + header + footer
+- [ ] Gradientes TypeUI Colorful aplicados no hero e cards de plano
+- [ ] Header com logo placeholder, menus centralizados, botões login/registro à direita
+- [ ] FAQ accordion funcional
+- [ ] Responsivo em mobile, tablet e desktop
+- [ ] Registro → Login → Dashboard (vazio) → Logout
 - [ ] Google OAuth funcional
-- [ ] Novo usuário tem `plan_tier = 'digital'` automaticamente
-- [ ] `PlanService.canAddPet()` retorna correto para cada plano
+- [ ] LCP < 1.5s na landing
+- [ ] Deploy automático no Vercel
 
 ---
 
 ## Fase 2 — Pet Management + Tag + Slug Público
 
-### T011 [B][T] — Pet Service (CRUD + Slug + Photos)
-- Interface `Pet` com campos v2 (public_slug, reward_amount_cents, lost_description, max_photos)
-- CRUD via Supabase SDK (RLS protege)
-- Geração automática de `public_slug` (formato: `{petName}-{random4chars}`)
-- Upload de fotos respeitando limite do plano (`max_photos` derivado de `plan_tier`)
-- Compressão client-side antes do upload (canvas resize → max 500KB)
+### T012 [B][T] — Pet Service (CRUD + Slug + Photos)
+- CRUD via Supabase SDK, geração de `public_slug`, upload com compressão client-side
 
-### T012 [T] — Telas de Pet Management
-- Pet List: grid cards com status badge, indicador de recompensa ativa
-- Pet Form: formulário completo, upload de fotos (respeitando limite), validações
-- Pet Detail: tabs (Info, Saúde, Tags, Scans), badge de plano, CTA upgrade
-- Empty state quando não tem pets
-- Banner "Tenha uma tag física" para plano Digital
+### T013 [T] — Telas de Pet Management
+- Pet List, Pet Form, Pet Detail (tabs), empty states, CTA upgrade
 
-### T013 [B][T] — Edge Function: Activate Tag
-- Recebe `{tagCode, petId}` + auth token
-- **Verifica que tutor tem plano com tag** (essential+)
-- Verifica: tag orphan? Pet pertence ao tutor?
-- UPDATE tag: `pet_id, status='active', activated_by, activated_at`
-- Rejeita se plano `digital`
+### T014 [B][T] — Edge Function: Activate Tag
+- Verifica plano essential+, tag orphan, ownership. Deploy via dashboard Supabase.
 
-### T014 [T] — Tela de Ativação de Tag
-- Se tutor é `digital`: mostrar página de upgrade em vez da ativação
-- Se tutor tem plano pago: fluxo normal de seleção de pet + 1 clique
+### T015 [T] — Tela de Ativação de Tag
+- Plano digital → página upgrade. Plano pago → seleção pet + 1 clique.
 
 ### → Checkpoint Fase 2
-- [ ] Criar pet com slug público → acessar `/p/{slug}` (tela básica)
-- [ ] Ativar tag (plano essential+) → tag vinculada
-- [ ] Plano digital bloqueado de ativar tag com CTA de upgrade
-- [ ] Limites de fotos por plano funcionam
+- [ ] CRUD pet funcional com fotos e slug público
+- [ ] Tag ativada, `/p/{slug}` mostra dados básicos
+- [ ] Plano digital bloqueado de ativar tag
 
 ---
 
 ## Fase 3 — Scan, Notificação, IP Geoloc e Página Pública
 
-### T015 [B][T][NEW] — Módulo IP Geolocation (Edge Function)
-**Arquivo:** `supabase/functions/_shared/ip-geolocation.ts`
+### T016 [B][T] — Módulo IP Geolocation (Edge Function shared)
+- ip-api.com com timeout 3s. Retorna city/region/country/lat/lon ou null.
 
-- Extrair IP do header `X-Forwarded-For` (Supabase Edge Functions suportam)
-- Consultar `http://ip-api.com/json/{ip}?fields=status,city,regionName,country,lat,lon`
-- Retornar `{ city, region, country, lat, lon }` ou `null` se falhar
-- Timeout: 3 segundos (não bloquear o scan se ip-api falhar)
-- Não armazenar IP raw — apenas dados derivados
+### T017 [B][T] — Edge Function: Scan
+- Público. Rate limit + debounce. Geoloc precisa OU IP fallback. INSERT scan_event.
 
-### T016 [B][T] — Edge Function: Scan (v2 com IP Geoloc)
-- Endpoint público (anon key)
-- Recebe `{tagCode, latitude?, longitude?, message?}`
-- Rate limiting: 60 req/min por IP, debounce 5min por tag+IP
-- Buscar tag → pet → owner → notification_prefs
-- **Lógica de localização:**
-  1. Se `latitude` e `longitude` presentes → `location_type = 'precise'`
-  2. Se não → chamar módulo IP Geolocation → `location_type = 'approximate'`
-  3. Se IP geoloc também falhar → `location_type = 'none'`
-- INSERT scan_event com todos os dados (dispara Realtime)
-- Chamar send-notification internamente
-- Retornar `{success, petName, ownerNotified, rewardAmount}`
+### T018 [B][T] — Edge Function: Send Notification
+- 3 templates email (preciso/aproximado/nenhum). Recompensa inclusa se aplicável. Resend API.
 
-### T017 [B][T] — Edge Function: Send Notification (v2 com 3 templates)
-- Service-role only
-- Template 1 — Localização precisa: email com mapa estático (Google Static Maps API ou similar)
-- Template 2 — Localização aproximada: email com cidade/região + disclaimer
-- Template 3 — Sem localização: email básico com mensagem do encontrador
-- Se pet tem recompensa ativa: incluir no email "Recompensa oferecida: R$ X"
-- Enviar via Resend API
+### T019 [B][T] — Página Pública SSR
+- `/t/{tagCode}` + `/p/{publicSlug}`. Modo safe/lost/orphan. Reward badge. Geoloc request.
 
-### T018 [B][T] — Página Pública SSR (v2 com Recompensa + Dual Route)
-- **Duas rotas SSR:**
-  - `/t/{tagCode}` — acesso via tag QR
-  - `/p/{publicSlug}` — acesso via link direto (plano Digital)
-- Resolver: buscar tag/slug → pet → owner (dados públicos)
-- Modo safe: info + contato (sem geoloc, sem recompensa exibida)
-- Modo lost:
-  - Banner alerta gradient red→orange
-  - **Reward badge** (gradient blue→violet) se `reward_amount_cents > 0` e plano ≥ essential
-  - `lost_description` se preenchida
-  - Geoloc request → se negada, submit do form envia `ipLocationFallback: true`
-- Tag orphan: tela genérica + CTA
-- Meta tags OpenGraph dinâmicas (incluindo recompensa no description se lost)
-- Funciona sem JavaScript para info básica
+### T020 [T] — Realtime Notifications no Dashboard
+- Subscribe scan_events. Toast com 📍/📌/📎. Apenas essential+.
 
-### T019 [T] — Realtime Notifications no Dashboard
-- Subscribe a `scan_events` filtrado por pet IDs do tutor
-- Toast com: nome do pet, localização (precisa ou aproximada), horário
-- Indicador visual: 📍 (preciso) vs 📌 (aproximado) vs 📎 (sem localização)
-- **Apenas planos essential+** (plano digital não tem realtime)
-- Reconnect com exponential backoff
-
-### T020 [T] — Edge Function: Toggle Lost (v2 com Recompensa)
-- Recebe `{petId, status, rewardAmountCents?, lostDescription?}` + auth token
-- Verificar ownership
-- Se ativando `lost`:
-  - UPDATE pet: status='lost', lost_since=now(), reward_amount_cents, lost_description
-  - **Verificar que plano permite recompensa** (essential+) — se digital, ignorar reward
-- Se desativando:
-  - UPDATE pet: status='safe' (preservar reward_amount_cents e lost_description)
-- Invalidar cache SSR via Vercel API: `POST https://api.vercel.com/v1/projects/{id}/revalidate?path=/t/{tagCode}&path=/p/{slug}`
-- Retornar pet atualizado
+### T021 [T] — Edge Function: Toggle Lost + Recompensa
+- Status + reward + description. Invalida cache Vercel.
 
 ### → Checkpoint Fase 3
-- [ ] Scan com geoloc → email com mapa → toast no dashboard 📍
-- [ ] Scan sem geoloc → email com "São Paulo, SP" → toast com 📌
-- [ ] Scan com ip-api down → email básico → toast com 📎
-- [ ] Recompensa exibida na página pública quando lost + valor > 0
-- [ ] Plano digital: sem recompensa, sem realtime
-- [ ] `/p/{slug}` funciona para pets sem tag
-- [ ] LCP < 1.5s nas rotas públicas
+- [ ] Scan → email em < 30s (preciso ou aproximado)
+- [ ] Recompensa na página pública quando lost
+- [ ] Realtime toast no dashboard
 
 ---
 
-## Fase 4 — Health Records + Planos + Pagamento
+## Fase 4 — Health Records + Dashboard + Settings + Polish
 
-### T021 [T] — Health Records Service + Telas
-- CRUD via Supabase SDK
-- Formulário dinâmico por tipo
-- **Limite mensal para plano digital:** verificar count de registros no mês corrente
-- Upload de anexo (PDF até 5MB)
-- Lista com filtro por tipo, ordenada por data
-
-### T022 [B][T] — Stripe Integration (Edge Functions)
-- **create-checkout:** Criar Stripe Checkout Session
-  - `metadata`: `{userId, planTier}`
-  - Prices: 3 products (essential, elite, guardian)
-  - Trial: 7 dias essential sem cartão
-- **create-portal:** Stripe Customer Portal Session
-- **stripe-webhook:** Processar eventos:
-  - `checkout.session.completed` → UPDATE profile plan_tier + subscription_status
-  - `customer.subscription.updated` → UPDATE plan_tier
-  - `customer.subscription.deleted` → plan_tier = 'digital', subscription_status = 'canceled'
-  - `invoice.payment_failed` → subscription_status = 'past_due'
-- Signature verification + idempotency (tabela stripe_events)
-- **Downgrade handling:** ao ir para digital, pets excedentes → readonly, tags desvinculadas (mas mantidas em DB)
-
-### T023 [T] — Tela de Pricing
-- Tabela comparativa 4 planos (conforme spec US-009)
-- Destaque visual no plano recomendado (Elite)
-- Gradientes TypeUI Colorful nos cards de plano
-- Botão "Começar Grátis" para Digital (redirect para registro)
-- Botões de checkout para pagos
-- Indicação do plano atual (se logado)
-- Badge "Trial 7 dias" para Essential
+### T022 [T] — Health Records (CRUD + limite mensal digital)
+### T023 [T] — Dashboard Home (Bento Grid + shell sidebar/topbar)
+### T024 [T] — Settings (Perfil + Notificações + LGPD excluir conta)
+### T025 [T] — Co-Tutor Management (Elite+ — convite email, aceite, revogação)
+### T026 — SEO + Meta Tags dinâmicas
+### T027 — Performance Audit (Lighthouse ≥ 90, bundle < 150KB)
+### T028 — Testes E2E (Playwright — fluxos completos)
 
 ### → Checkpoint Fase 4
-- [ ] Health records com limite mensal para digital
-- [ ] Checkout Stripe → plan_tier atualizado → limites expandidos
-- [ ] Downgrade → pets excedentes readonly
-- [ ] Trial 7 dias essential funcional
+- [ ] Dashboard completo | Health records com limites | Lighthouse ≥ 90 | E2E passing
 
 ---
 
-## Fase 5 — Dashboard + Settings + Polish
+## Fase 5 — Stripe Integration (ÚLTIMA)
 
-### T024 [T] — Dashboard Home (Bento Grid)
-- Layout shell: sidebar (colapsável) + topbar
-- Bento Grid (1 col mobile, 2 tab, 3 desktop) com gradientes TypeUI
-- Cards: Meus Pets (com badge de recompensa ativa), Atividade, Plano, Alertas
-- **Banner upgrade para digital:** "Proteja seu pet com uma tag QR → Upgrade"
-- Skeleton loading, pull-to-refresh
+> ⚠️ Só execute quando tudo acima estiver validado. Até aqui, altere `plan_tier` via SQL Editor.
 
-### T025 [T] — Settings (Perfil + Notificações)
-- Edição de perfil com validação telefone BR
-- Prefs de notificação (email on/off, snooze)
-- Zona de perigo: excluir conta (LGPD)
+### T029 [B] — Configurar Stripe no Dashboard (products, prices, portal, secrets)
+### T030 [B][T] — Edge Functions: create-checkout, create-portal, stripe-webhook
+### T031 [T] — Upgrade/Downgrade Flow no Frontend
+### T032 — Webhook URL no Stripe + testes com cartão `4242 4242 4242 4242`
 
-### T026 [NEW][T] — Co-Tutor Management (Elite+)
-- Tela de convite: email do co-tutor → INSERT pet_co_tutors (status 'pending')
-- Email de convite via Resend com deep link
-- Co-tutor aceita → status 'accepted' → recebe notificações de scan
-- Owner pode revogar acesso
-- **Gate por plano:** apenas elite e guardian veem esta opção
+### → Checkpoint Fase 5
+- [ ] Checkout funcional | Webhook processando | Upgrade/downgrade refletido
 
-### T027 — SEO + Meta Tags
-- Meta service: title, description, OG, Twitter Card dinâmicos
-- Recompensa no OG description se pet lost: "Luna está perdida! Recompensa: R$ 500"
-- Canonical URLs corretas para `/t/` e `/p/`
+---
 
-### T028 — Performance Audit
-- Lighthouse em rotas públicas: score ≥ 90
-- Bundle < 150KB gzipped
-- Imagens WebP, lazy loading, srcset
-- Preload fontes (Outfit 600, Inter 400)
-- Verificar que gradientes não impactam CLS
+## Fase 6 — Deploy Final
 
-### T029 — Testes E2E (Playwright)
-- Fluxo completo: Registro → Pet → Tag → Scan → Email (com mock)
-- Fluxo lost: Toggle lost com recompensa → Página pública com badge
-- Fluxo plano: Digital → Upgrade → Limites expandidos
-- Fluxo IP geoloc: Scan sem browser geoloc → verificar location_type approximate
-- Visual regression: screenshots
-
-### T030 — Deploy Pipeline + Monitoramento
-- GitHub Actions: lint, type-check, test, build, e2e
-- Deploy Vercel: `vercel.json` com cron, rewrites, env vars
-- Deploy Supabase: migrations + Edge Functions
-- Stripe webhooks para URL produção
-- Domínio `petvolta.com.br` + HTTPS + HSTS
-- **Monitoramento Supabase Free:** dashboard custom ou script que verifica DB size, egress, invocations
+### T033 — CI/CD (GitHub Actions)
+### T034 — Configuração de produção (Auth confirm email, Google OAuth publicar, cron ativo)
 
 ### → Checkpoint Final
-- [ ] Quickstart scenarios (plan.md) passam
-- [ ] Lighthouse ≥ 90 Performance
-- [ ] E2E tests verdes
-- [ ] CI/CD pipeline verde
-- [ ] Deploy produção acessível
-- [ ] Stripe live configurado
-- [ ] Cron anti-pausa ativo
-- [ ] DB size < 100MB no deploy inicial
+- [ ] Todos os fluxos end-to-end | Landing LCP < 1.5s | Sentry ativo | Cron anti-pausa ativo

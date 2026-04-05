@@ -3,13 +3,16 @@
 # Compiled output
 /dist
 /tmp
+/.tmp
 /out-tsc
 /bazel-out
 
 # Node
 /node_modules
+/.npm-cache
 npm-debug.log
 yarn-error.log
+.env.local
 
 # IDEs and editors
 .idea/
@@ -30,6 +33,7 @@ yarn-error.log
 
 # Miscellaneous
 /.angular/cache
+.supabase/
 .sass-cache/
 /connect.lock
 /coverage

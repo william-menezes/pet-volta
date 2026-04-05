@@ -1,10 +1,10 @@
-# 🐾 Pet Volta MVP — Plano de Implementação Técnica (v2)
+# 🐾 Pet Volta MVP — Plano de Implementação Técnica (v3)
 
 > **Branch:** `001-mvp-pet-volta`  
-> **Data:** 2026-04-04  
+> **Data:** 2026-04-05  
 > **Spec:** [spec.md](./spec.md)  
 > **Constitution:** [constitution.md](../constitution.md)  
-> **Changelog v2:** TypeUI Colorful correto, IP geoloc, recompensa, 4 planos, Supabase Free, Vercel
+> **Changelog v3:** Landing page, Stripe como última fase, mock de plano, serviços via plataforma
 
 ---
 
@@ -341,7 +341,88 @@ Novos arquivos em relação à v1:
 
 ---
 
-## 6. Gargalos e Riscos — Atualização v2
+## 6. Landing Page — Arquitetura e Design
+
+### 6.1 Estrutura de Componentes
+
+A landing page é composta de componentes standalone independentes, todos SSR prerender:
+
+```
+src/app/features/landing/
+├── landing.routes.ts
+├── landing-page.component.ts          # Componente pai que orquestra as seções
+├── header/
+│   └── header.component.ts            # Sticky header com nav + auth buttons
+├── hero/
+│   └── hero.component.ts              # Gradient hero com CTAs
+├── how-it-works/
+│   └── how-it-works.component.ts      # 3 passos com ícones
+├── pricing-section/
+│   └── pricing-section.component.ts   # 4 cards de planos (estático, sem Stripe)
+├── testimonials/
+│   └── testimonials.component.ts      # 3 cards de depoimentos fictícios
+├── faq/
+│   └── faq.component.ts              # Accordion com perguntas
+├── cta-banner/
+│   └── cta-banner.component.ts        # Barra final de CTA
+└── footer/
+    └── footer.component.ts            # Footer com links e copyright
+```
+
+### 6.2 Design Decisions (TypeUI Colorful aplicado)
+
+| Seção | Background | Elementos Visuais |
+|---|---|---|
+| Header | `bg-white/80 backdrop-blur-md` (ao scroll) | Logo + nav. Botão "Criar Conta" com `bg-gradient-to-r from-blue-500 to-violet-500` |
+| Hero | `bg-gradient-to-br from-blue-600 via-blue-500 to-violet-500` | Texto branco, CTAs brancos, ilustração/mockup |
+| Como Funciona | `bg-white` | Cards com ícones, borda sutil, shadow-sm |
+| Planos | `bg-gray-50` | Card Elite com borda `border-gradient` e badge "Recomendado" |
+| Depoimentos | `bg-white` | Cards com avatar (initials), estrelas em `text-yellow-400` |
+| FAQ | `bg-gray-50` | Accordion com hover state e chevron animado |
+| CTA Final | `bg-gradient-to-r from-blue-500 to-violet-500` | Texto branco, botão outline branco |
+| Footer | `bg-gray-900 text-gray-400` | Links hover `text-white`, logo em branco |
+
+### 6.3 Responsividade
+
+| Breakpoint | Header | Hero | Planos | Depoimentos |
+|---|---|---|---|---|
+| Mobile (<768px) | Hamburger menu | Stack vertical, CTA full-width | 1 card por row (scroll vertical) | 1 card por row |
+| Tablet (768-1024px) | Nav visível | Side-by-side (text + mockup) | 2 cards por row | 2 cards por row |
+| Desktop (>1024px) | Nav completo | Side-by-side com espaço | 4 cards em row | 3 cards em row |
+
+---
+
+## 7. Estratégia de Mock de Plano (Stripe é Último)
+
+### 7.1 Premissa
+
+A integração com Stripe é a **última fase** do desenvolvimento (Fase 6 no tasks.md). Até lá, o sistema de planos funciona com mock:
+
+### 7.2 Como Funciona Sem Stripe
+
+1. **Novo usuário** → `plan_tier = 'digital'` (via trigger SQL no signup)
+2. **Para testar outros planos** → alterar manualmente no Supabase Studio:
+   ```sql
+   UPDATE profiles SET plan_tier = 'essential' WHERE id = 'uuid-do-usuario';
+   ```
+3. **RLS funciona normalmente** — as policies verificam `plan_tier` no banco, independente de como foi setado
+4. **Botões de plano na landing page** → redirecionam para `/auth/register` com query param `?plan=essential`
+5. **Tela de pricing no dashboard** → exibe planos e features, botões de "Assinar" mostram toast "Pagamento será habilitado em breve" ou desabilitados
+6. **Botão de debug em settings** (removido antes de produção) → permite trocar plano manualmente para testes
+
+### 7.3 Quando Integrar Stripe
+
+Quando TODOS estes critérios forem atendidos:
+- [ ] Todas as Fases 0-5 concluídas e deployadas
+- [ ] Fluxos end-to-end validados com planos mockados
+- [ ] Landing page publicada e acessível
+- [ ] Scans e notificações funcionando em produção
+- [ ] Performance targets atingidos (LCP, Lighthouse)
+- [ ] Pelo menos 1 semana de uso sem bugs críticos
+
+---
+
+## 8. Gargalos e Riscos — Atualização v3
 
 ### 🔴 Risco Alto
 
@@ -364,7 +445,7 @@ Novos arquivos em relação à v1:
 
 ---
 
-## 7. Inconsistências Corrigidas nesta v2
+## 9. Inconsistências Corrigidas
 
 | # | Item Original | Correção |
 |---|---|---|

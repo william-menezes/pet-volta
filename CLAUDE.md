@@ -26,11 +26,10 @@ Leia OBRIGATORIAMENTE antes de implementar qualquer coisa:
 ## Comandos
 - `npm start` → `ng serve` (dev server)
 - `npm run build` → `ng build` (production build)
-- `npm test` → Vitest
-- `npm run lint` → ESLint
-- `supabase start` → Inicia Supabase local (requer Docker)
-- `supabase db diff` → Verifica mudanças no schema
-- `supabase functions serve` → Roda Edge Functions localmente
+- `npm test` → `ng test` (Karma/Jasmine)
+- `npm run supabase:start` → Inicia Supabase local (requer Docker)
+- `npm run supabase:stop` → Para Supabase local
+- `npm run supabase:reset` → Reseta DB local + reaplica migrations/seed
 
 ## Convenções de código
 - **Variáveis/funções:** inglês, camelCase
@@ -55,6 +54,6 @@ Leia OBRIGATORIAMENTE antes de implementar qualquer coisa:
 @core/* → src/app/core/*
 @shared/* → src/app/shared/*
 @features/* → src/app/features/*
-@ui/* → src/app/shared/ui/*
-@models/* → src/app/shared/models/*
+@ui/* → src/app/ui/*
+@models/* → src/app/models/*
 @env/* → src/environments/*
