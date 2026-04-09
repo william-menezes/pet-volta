@@ -14,10 +14,6 @@ export class SupabaseClientService {
     this.client = isPlatformBrowser(this.platformId)
       ? this.createBrowserClient()
       : this.createServerClient();
-
-    if (isPlatformBrowser(this.platformId)) {
-      void this.bootstrapAuthSignals();
-    }
   }
 
   supabase(): SupabaseClient {
@@ -44,13 +40,5 @@ export class SupabaseClientService {
     });
   }
 
-  private async bootstrapAuthSignals() {
-    const { data } = await this.client.auth.getUser();
-    this.currentUser.set(data.user ?? null);
-
-    this.client.auth.onAuthStateChange((_event, session) => {
-      this.currentUser.set(session?.user ?? null);
-    });
-  }
 }
 

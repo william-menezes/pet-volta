@@ -13,5 +13,6 @@
 
   body {
     margin: 0;
+    @apply bg-surface font-body text-text;
   }
 }

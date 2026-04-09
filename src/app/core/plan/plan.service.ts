@@ -9,13 +9,18 @@ export const PLAN_LIMITS: Record<
   {
     maxPets: number;
     maxPhotosPerPet: number;
+    healthRecordsMonthly: number | null;
+    scanHistoryDays: number | null;
     hasTagAccess: boolean;
+    hasReward: boolean;
+    hasMultiTutor: boolean;
+    hasRealtime: boolean;
   }
 > = {
-  digital: { maxPets: 1, maxPhotosPerPet: 1, hasTagAccess: false },
-  essential: { maxPets: 1, maxPhotosPerPet: 2, hasTagAccess: true },
-  elite: { maxPets: 3, maxPhotosPerPet: 10, hasTagAccess: true },
-  guardian: { maxPets: 5, maxPhotosPerPet: 10, hasTagAccess: true },
+  digital:   { maxPets: 1, maxPhotosPerPet: 1,  healthRecordsMonthly: 2,    scanHistoryDays: 7,    hasTagAccess: false, hasReward: false, hasMultiTutor: false, hasRealtime: false },
+  essential: { maxPets: 1, maxPhotosPerPet: 2,  healthRecordsMonthly: null, scanHistoryDays: 90,   hasTagAccess: true,  hasReward: true,  hasMultiTutor: false, hasRealtime: true  },
+  elite:     { maxPets: 3, maxPhotosPerPet: 10, healthRecordsMonthly: null, scanHistoryDays: 365,  hasTagAccess: true,  hasReward: true,  hasMultiTutor: true,  hasRealtime: true  },
+  guardian:  { maxPets: 5, maxPhotosPerPet: 10, healthRecordsMonthly: null, scanHistoryDays: null, hasTagAccess: true,  hasReward: true,  hasMultiTutor: true,  hasRealtime: true  },
 };
 
 @Injectable({ providedIn: 'root' })

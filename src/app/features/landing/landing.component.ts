@@ -18,9 +18,9 @@ type FaqItem = { q: string; a: string };
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink, UiButtonComponent, NgClass],
   template: `
-    <main class="min-h-dvh bg-white text-text">
+    <main class="min-h-dvh bg-surface text-text">
       <header
-        class="sticky top-0 z-40 border-b border-gray-100 bg-white/80 backdrop-blur"
+        class="sticky top-0 z-40 border-b border-gray-200 bg-surface/80 backdrop-blur"
       >
         <div class="mx-auto flex max-w-6xl items-center gap-3 px-4 py-3">
           <a
@@ -71,7 +71,7 @@ type FaqItem = { q: string; a: string };
         @if (menuOpen()) {
           <div
             id="mobile-menu"
-            class="border-t border-gray-100 bg-white md:hidden"
+            class="border-t border-gray-200 bg-surface md:hidden"
           >
             <div class="mx-auto grid max-w-6xl gap-3 px-4 py-4">
               <a
@@ -114,7 +114,7 @@ type FaqItem = { q: string; a: string };
 
       <section
         id="inicio"
-        class="relative overflow-hidden bg-gradient-to-br from-primary to-secondary"
+        class="relative overflow-hidden bg-gradient-green"
       >
         <div
           class="mx-auto grid max-w-6xl gap-10 px-4 py-14 md:grid-cols-2 md:py-20"
@@ -210,7 +210,7 @@ type FaqItem = { q: string; a: string };
         </div>
       </section>
 
-      <section id="planos" class="bg-white">
+      <section id="planos" class="bg-surface">
         <div class="mx-auto max-w-6xl px-4 py-14 md:py-18">
           <div class="max-w-2xl">
             <h2 class="font-display text-3xl font-semibold tracking-tight text-text">
@@ -227,7 +227,7 @@ type FaqItem = { q: string; a: string };
                 class="rounded-pet border border-gray-200 bg-white p-5"
                 [ngClass]="
                   plan.highlight
-                    ? 'bg-gradient-to-r from-blue-50 to-violet-50 border-transparent'
+                    ? 'bg-gradient-to-br from-primary/10 to-accent/20 border-primary/15 shadow-pet-md'
                     : ''
                 "
               >
@@ -278,7 +278,7 @@ type FaqItem = { q: string; a: string };
         </div>
       </section>
 
-      <section class="bg-gray-50">
+      <section class="bg-primary/5">
         <div class="mx-auto max-w-6xl px-4 py-14 md:py-18">
           <div class="max-w-2xl">
             <h2 class="font-display text-3xl font-semibold tracking-tight text-text">
@@ -304,7 +304,7 @@ type FaqItem = { q: string; a: string };
             <div class="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2">
               @for (t of testimonials(); track t.name) {
                 <figure
-                  class="w-[85%] shrink-0 snap-center rounded-pet border border-gray-200 bg-white p-5"
+                  class="w-5/6 shrink-0 snap-center rounded-pet border border-gray-200 bg-white p-5"
                 >
                   <blockquote class="text-sm text-gray-700">“{{ t.quote }}”</blockquote>
                   <figcaption class="mt-4 text-sm font-medium text-text">
@@ -342,39 +342,60 @@ type FaqItem = { q: string; a: string };
         </div>
       </section>
 
-      <footer class="border-t border-gray-100 bg-white">
+      <!-- CTA Banner final -->
+      <section class="bg-gradient-to-r from-primary to-secondary">
+        <div class="mx-auto flex max-w-6xl flex-col items-center gap-6 px-4 py-14 text-center md:flex-row md:justify-between md:text-left">
+          <div>
+            <h2 class="font-display text-2xl font-semibold text-white md:text-3xl">
+              Comece agora, é grátis.
+            </h2>
+            <p class="mt-2 text-white/80">
+              Cadastre seu pet e tenha um perfil público em minutos.
+            </p>
+          </div>
+          <a routerLink="/auth/register" class="shrink-0">
+            <ui-button
+              type="button"
+              [className]="'border border-white/60 bg-white/10 text-white hover:bg-white/20'"
+            >
+              Criar conta grátis
+            </ui-button>
+          </a>
+        </div>
+      </section>
+
+      <footer class="bg-gray-900">
         <div class="mx-auto grid max-w-6xl gap-10 px-4 py-14 md:grid-cols-4">
           <div class="md:col-span-1">
-            <p class="font-display text-lg font-semibold text-text">🐾 Pet Volta</p>
-            <p class="mt-2 text-sm text-gray-700">
+            <p class="font-display text-lg font-semibold text-white">🐾 Pet Volta</p>
+            <p class="mt-2 text-sm text-gray-400">
               Um jeito simples e rápido de reconectar você ao seu melhor amigo.
             </p>
           </div>
 
-          <div class="grid gap-2 text-sm text-gray-700">
+          <div class="grid gap-2 text-sm text-gray-400">
             <p class="text-xs font-medium uppercase tracking-wide text-gray-500">Produto</p>
-            <a class="hover:text-text hover:underline" href="#planos">Planos</a>
-            <a class="hover:text-text hover:underline" routerLink="/auth/register">Começar</a>
+            <a class="hover:text-white hover:underline" href="#planos">Planos</a>
+            <a class="hover:text-white hover:underline" routerLink="/auth/register">Começar</a>
           </div>
 
-          <div class="grid gap-2 text-sm text-gray-700">
+          <div class="grid gap-2 text-sm text-gray-400">
             <p class="text-xs font-medium uppercase tracking-wide text-gray-500">Suporte</p>
-            <a class="hover:text-text hover:underline" href="#faq">FAQ</a>
-            <a class="hover:text-text hover:underline" routerLink="/auth/login">Login</a>
+            <a class="hover:text-white hover:underline" href="#faq">FAQ</a>
+            <a class="hover:text-white hover:underline" routerLink="/auth/login">Login</a>
           </div>
 
-          <div class="grid gap-2 text-sm text-gray-700">
+          <div class="grid gap-2 text-sm text-gray-400">
             <p class="text-xs font-medium uppercase tracking-wide text-gray-500">Legal</p>
-            <a class="hover:text-text hover:underline" routerLink="/legal/terms">Termos</a>
-            <a class="hover:text-text hover:underline" routerLink="/legal/privacy">Privacidade</a>
-            <a class="hover:text-text hover:underline" routerLink="/legal/lgpd">LGPD</a>
+            <a class="hover:text-white hover:underline" routerLink="/legal/terms">Termos</a>
+            <a class="hover:text-white hover:underline" routerLink="/legal/privacy">Privacidade</a>
+            <a class="hover:text-white hover:underline" routerLink="/legal/lgpd">LGPD</a>
           </div>
         </div>
 
-        <div class="border-t border-gray-100">
-          <div class="mx-auto max-w-6xl px-4 py-6 text-sm text-gray-600">
-            © {{ year() }} Pet Volta — feito com carinho para trazer pets de volta pra
-            casa.
+        <div class="border-t border-gray-800">
+          <div class="mx-auto max-w-6xl px-4 py-6 text-sm text-gray-500">
+            © {{ year() }} Pet Volta — feito com carinho para trazer pets de volta pra casa.
           </div>
         </div>
       </footer>

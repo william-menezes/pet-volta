@@ -12,7 +12,7 @@ import { UiToastService } from '@ui/toast/ui-toast.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [ReactiveFormsModule, RouterLink, UiButtonComponent, UiCardComponent],
   template: `
-    <main class="min-h-dvh bg-gradient-to-br from-primary to-secondary">
+    <main class="min-h-dvh bg-gradient-green">
       <section class="mx-auto flex min-h-dvh max-w-md items-center px-4 py-10">
         <ui-card [className]="'w-full p-6'">
           <h1 class="font-display text-2xl font-semibold text-text">Recuperar senha</h1>
@@ -30,7 +30,7 @@ import { UiToastService } from '@ui/toast/ui-toast.service';
                 type="email"
                 formControlName="email"
                 autocomplete="email"
-                class="h-11 w-full rounded-pet-sm border border-gray-200 bg-white px-3 text-sm text-text outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+                class="h-11 w-full rounded-full border border-gray-200 bg-white px-4 text-sm text-text outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
               />
             </div>
 

@@ -29,7 +29,7 @@ import {
       <div class="flex justify-end gap-2 border-t border-gray-200 px-5 py-4">
         <button
           type="button"
-          class="h-10 rounded-pet-sm border border-gray-200 bg-white px-4 text-sm font-medium text-text"
+          class="h-10 rounded-full border border-gray-200 bg-white px-4 text-sm font-medium text-text hover:bg-primary/5"
           (click)="close()"
         >
           Fechar

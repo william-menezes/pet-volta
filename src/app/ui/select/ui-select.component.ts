@@ -6,7 +6,7 @@ import { ChangeDetectionStrategy, Component, input, model } from '@angular/core'
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <select
-      class="h-11 w-full rounded-pet-sm border border-gray-200 bg-white px-3 text-sm text-text outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 disabled:opacity-50"
+      class="h-11 w-full rounded-full border border-gray-200 bg-white px-4 text-sm text-text outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 disabled:opacity-50"
       [disabled]="disabled()"
       [value]="value()"
       (change)="onChange($any($event.target).value)"

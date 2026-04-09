@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "figma": {
+      "command": "C:\\Program Files\\nodejs\\npx.cmd",
+      "args": ["-y", "figma-developer-mcp", "--env", "d:\\willi\\dev\\pet-volta\\.env"]
+    }
+  }
+}

@@ -31,7 +31,7 @@ export class UiButtonComponent {
 
   classes = computed(() => {
     const base =
-      'inline-flex items-center justify-center gap-2 rounded-pet-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:opacity-50 disabled:pointer-events-none';
+      'inline-flex items-center justify-center gap-2 rounded-full font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:pointer-events-none disabled:opacity-50';
 
     const sizes: Record<ButtonSize, string> = {
       sm: 'h-9 px-3 text-sm',
@@ -43,7 +43,7 @@ export class UiButtonComponent {
       primary: 'bg-primary text-white hover:brightness-110',
       secondary: 'bg-secondary text-white hover:brightness-110',
       danger: 'bg-danger text-white hover:brightness-110',
-      ghost: 'bg-transparent text-text hover:bg-gray-50 border border-gray-200',
+      ghost: 'border border-gray-200 bg-white/0 text-text hover:bg-primary/5',
     };
 
     return [base, sizes[this.size()], variants[this.variant()], this.className()]

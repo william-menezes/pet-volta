@@ -61,6 +61,18 @@ supabase link --project-ref SEU_PROJECT_REF
 supabase start  # Docker precisa estar rodando! Primeiro start: 5-10 min
 ```
 
+### 7.1 Edge Function (T014 — Activate Tag)
+> Função privada (requer login) que valida **plano Essential+**, tag **orphan** e ownership do pet.
+
+```bash
+# Deploy da Edge Function
+supabase functions deploy activate-tag
+```
+
+Depois, no Supabase Dashboard:
+- **Edge Functions → activate-tag → Settings**: manter **Verify JWT = ON**
+- Teste: `POST {SUPABASE_URL}/functions/v1/activate-tag` com header `Authorization: Bearer <access_token>`
+
 ### 8. Primeiro Commit + Deploy
 ```bash
 git add . && git commit -m "chore: scaffold angular 21 + spec-kit"

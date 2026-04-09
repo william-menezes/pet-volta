@@ -7,7 +7,7 @@ import { RouterLink } from '@angular/router';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink],
   template: `
-    <main class="min-h-dvh bg-white">
+    <main class="min-h-dvh bg-surface text-text">
       <section class="mx-auto max-w-3xl px-4 py-10">
         <a routerLink="/" class="text-sm text-primary hover:underline">← Voltar</a>
         <h1 class="mt-4 font-display text-3xl font-semibold text-text">
@@ -21,4 +21,3 @@ import { RouterLink } from '@angular/router';
   `,
 })
 export class TermsPage {}
-
