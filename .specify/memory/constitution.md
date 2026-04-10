@@ -55,6 +55,12 @@ O código serve a especificação, não o contrário. Toda implementação deve 
 - **Input/Output signal-based**: `input()`, `output()` — nunca decorators `@Input()`, `@Output()`
 - **Lazy loading** via `loadComponent` em todas as rotas de feature
 
+### UI Components
+- **Zard UI primeiro**: sempre usar componentes do `src/app/ui/` (`ui-button`, `ui-card`, `ui-badge`, `ui-input`, `ui-label`, `ui-separator`, `ui-tabs`, `ui-dialog`, `ui-avatar`, `ui-badge`, `ui-switch`, `ui-skeleton`, `ui-dropdown`, `ui-select`) antes de criar elementos HTML equivalentes
+- **Fallback para HTML nativo**: apenas quando o componente Zard não existir ou não for tecnicamente compatível (ex: `<input formControlName>` com `UiInputComponent` que usa `model()`)
+- **Emojis proibidos** em todo o código e templates — usar `IconComponent` (`app-icon`) ou SVG inline quando necessário
+- **IconComponent** (`src/app/shared/icons/icon.component.ts`): usar para todos os ícones no template
+
 ### Estilização
 - **Tailwind CSS** exclusivamente — CSS customizado apenas em `@layer` quando Tailwind não cobre
 - **Tokens de design** via `tailwind.config.js` — nunca valores arbitrários (`text-[#hex]`)

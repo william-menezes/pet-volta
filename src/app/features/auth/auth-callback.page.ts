@@ -11,7 +11,7 @@ import { SupabaseClientService } from '@core/supabase/supabase-client.service';
     <main class="min-h-dvh bg-surface text-text">
       <section class="mx-auto flex min-h-dvh max-w-md items-center px-4 py-10">
         <div class="w-full rounded-pet border border-gray-200 bg-white p-6">
-          <p class="font-mono text-xs text-gray-500">🐾 Pet Volta</p>
+          <p class="font-mono text-xs text-gray-500">Pet Volta</p>
           <h1 class="mt-2 font-display text-xl font-semibold text-text">
             Concluindo login…
           </h1>
