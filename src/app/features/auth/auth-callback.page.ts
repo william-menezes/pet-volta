@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { Router } from '@angular/router';
 import { SupabaseClientService } from '@core/supabase/supabase-client.service';
 
@@ -20,12 +21,15 @@ import { SupabaseClientService } from '@core/supabase/supabase-client.service';
     </main>
   `,
 })
-export class AuthCallbackPage {
+export class AuthCallbackPage implements OnInit {
   private readonly supabase = inject(SupabaseClientService);
   private readonly router = inject(Router);
+  private readonly platformId = inject(PLATFORM_ID);
 
-  constructor() {
-    void this.finish();
+  ngOnInit() {
+    if (isPlatformBrowser(this.platformId)) {
+      void this.finish();
+    }
   }
 
   private async finish() {

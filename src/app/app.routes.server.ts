@@ -7,7 +7,7 @@ export const serverRoutes: ServerRoute[] = [
   { path: 'auth/register', renderMode: RenderMode.Prerender },
   { path: 'auth/forgot', renderMode: RenderMode.Prerender },
   { path: 'auth/reset', renderMode: RenderMode.Prerender },
-  { path: 'auth/callback', renderMode: RenderMode.Prerender },
+  { path: 'auth/callback', renderMode: RenderMode.Client },
   { path: 'legal/terms', renderMode: RenderMode.Prerender },
   { path: 'legal/privacy', renderMode: RenderMode.Prerender },
   { path: 'legal/lgpd', renderMode: RenderMode.Prerender },
